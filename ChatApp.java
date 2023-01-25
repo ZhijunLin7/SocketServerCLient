@@ -8,16 +8,14 @@ public class ChatApp {
     private JButton sendButton;
 
     public ChatApp() {
-     
+
         JFrame frame = new JFrame("Chat App");
         frame.setPreferredSize(new Dimension(400, 400));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      
-       
+
         frame.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
-        
-       
+
         this.messageArea = new JTextArea();
         messageArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(messageArea);
@@ -28,8 +26,7 @@ public class ChatApp {
         constraints.weightx = 1.0;
         constraints.weighty = 1.0;
         frame.add(scrollPane, constraints);
-        
-      
+
         this.messageField = new JTextField();
         constraints.gridx = 0;
         constraints.gridy = 1;
@@ -38,8 +35,7 @@ public class ChatApp {
         constraints.weightx = 1.0;
         constraints.weighty = 0.0;
         frame.add(messageField, constraints);
-        
-      
+
         this.sendButton = new JButton("Send");
         constraints.gridx = 1;
         constraints.gridy = 1;
@@ -48,8 +44,7 @@ public class ChatApp {
         constraints.weightx = 0.0;
         constraints.weighty = 0.0;
         frame.add(sendButton, constraints);
-      
-        
+
         frame.pack();
         frame.setVisible(true);
     }
@@ -69,7 +64,7 @@ public class ChatApp {
     public void setMessageArea(JTextArea messageArea) {
         this.messageArea = messageArea;
     }
-    
+
     public JButton getSendButton() {
         return sendButton;
     }
@@ -77,9 +72,9 @@ public class ChatApp {
     public void setSendButton(JButton sendButton) {
         this.sendButton = sendButton;
     }
+
     public static void main(String[] args) {
         new ChatApp();
     }
 
-    
 }

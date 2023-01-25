@@ -1,8 +1,6 @@
 
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-
 
 public class Serverconec implements Runnable {
 
@@ -16,7 +14,7 @@ public class Serverconec implements Runnable {
 
     @Override
     public void run() {
-     
+
         try {
             ServerSocket ss = new ServerSocket(puertoescucha);
             System.out.println("Abriendo servidor....");
@@ -24,7 +22,7 @@ public class Serverconec implements Runnable {
             socket.getInetAddress();
             System.out.println("conectado");
 
-            Conection c= new Conection(socket);
+            Conection c = new Conection(socket);
             Thread t = new Thread(c);
             t.start();
             ss.close();
@@ -33,6 +31,5 @@ public class Serverconec implements Runnable {
         }
         
     }
-
 
 }

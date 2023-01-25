@@ -1,7 +1,6 @@
 
 import java.net.Socket;
 
-
 public class Clientconec implements Runnable {
 
     // Atributos
@@ -17,10 +16,9 @@ public class Clientconec implements Runnable {
         try {
             s = new Socket("127.0.0.1", puertoescucha);
 
-           
-            Conection c= new Conection(s);
+            Conection c = new Conection(s);
             Thread t = new Thread(c);
-            t.start(); 
+            t.start();
         } catch (Exception e) {
             System.out.println("Error: " + e);
         }
