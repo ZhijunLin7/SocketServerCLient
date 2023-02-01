@@ -1,80 +1,145 @@
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
 
 public class ChatApp {
 
-    private JTextField messageField;
-    private JTextArea messageArea;
-    private JButton sendButton;
+    private JTextArea areaMsg;
+    private JTextField escribirMsg,puertoEscucha,puertoConnectar;
+    private JButton botonEnviar,botonSetPuertos;
 
     public ChatApp() {
 
         JFrame frame = new JFrame("Chat App");
-        frame.setPreferredSize(new Dimension(400, 400));
+        frame.setPreferredSize(new Dimension(300,400));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         frame.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
 
-        this.messageArea = new JTextArea();
-        messageArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(messageArea);
+        this.puertoEscucha = new JTextField();
+        this.puertoConnectar = new JTextField();
+        this.botonSetPuertos= new JButton("Set Puerto");
+
+
+
         constraints.gridx = 0;
         constraints.gridy = 0;
-        constraints.gridwidth = 2;
+        constraints.gridwidth = 1;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.weightx = 1.0;
+        constraints.weighty = 0.0;
+        frame.add(this.puertoEscucha, constraints);
+
+        constraints.gridx = 1;
+        constraints.gridy = 0;
+        constraints.gridwidth = 1;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.weightx = 1.0;
+        constraints.weighty = 0.0;
+        frame.add(this.puertoConnectar, constraints);
+
+        constraints.gridx = 2;
+        constraints.gridy = 0;
+        constraints.gridwidth = 1;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.weightx = 1.0;
+        constraints.weighty = 0.0;
+        frame.add(this.botonSetPuertos, constraints);
+
+
+
+
+        this.areaMsg = new JTextArea();
+        areaMsg.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(areaMsg);
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        constraints.gridwidth = 3;
         constraints.fill = GridBagConstraints.BOTH;
         constraints.weightx = 1.0;
         constraints.weighty = 1.0;
         frame.add(scrollPane, constraints);
 
-        this.messageField = new JTextField();
+        this.escribirMsg = new JTextField();
         constraints.gridx = 0;
-        constraints.gridy = 1;
+        constraints.gridy = 2;
+        constraints.gridwidth = 2;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.weightx = 1.0;
+        constraints.weighty = 0.0;
+        frame.add(escribirMsg, constraints);
+
+        this.botonEnviar = new JButton("Send");
+        constraints.gridx = 2;
+        constraints.gridy = 2;
         constraints.gridwidth = 1;
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.weightx = 1.0;
         constraints.weighty = 0.0;
-        frame.add(messageField, constraints);
-
-        this.sendButton = new JButton("Send");
-        constraints.gridx = 1;
-        constraints.gridy = 1;
-        constraints.gridwidth = 1;
-        constraints.fill = GridBagConstraints.NONE;
-        constraints.weightx = 0.0;
-        constraints.weighty = 0.0;
-        frame.add(sendButton, constraints);
+        frame.add(botonEnviar, constraints);
 
         frame.pack();
         frame.setVisible(true);
-    }
-
-    public JTextField getMessageField() {
-        return messageField;
-    }
-
-    public void setMessageField(JTextField messageField) {
-        this.messageField = messageField;
-    }
-
-    public JTextArea getMessageArea() {
-        return messageArea;
-    }
-
-    public void setMessageArea(JTextArea messageArea) {
-        this.messageArea = messageArea;
-    }
-
-    public JButton getSendButton() {
-        return sendButton;
-    }
-
-    public void setSendButton(JButton sendButton) {
-        this.sendButton = sendButton;
     }
 
     public static void main(String[] args) {
         new ChatApp();
     }
 
+    public JTextArea getAreaMsg() {
+        return areaMsg;
+    }
+
+    public void setAreaMsg(JTextArea areaMsg) {
+        this.areaMsg = areaMsg;
+    }
+
+    public JTextField getEscribirMsg() {
+        return escribirMsg;
+    }
+
+    public void setEscribirMsg(JTextField escribirMsg) {
+        this.escribirMsg = escribirMsg;
+    }
+
+    public JButton getBotonEnviar() {
+        return botonEnviar;
+    }
+
+    public void setBotonEnviar(JButton botonEnviar) {
+        this.botonEnviar = botonEnviar;
+    }
+
+    public JTextField getPuertoEscucha() {
+        return puertoEscucha;
+    }
+
+    public void setPuertoEscucha(JTextField puertoEscucha) {
+        this.puertoEscucha = puertoEscucha;
+    }
+
+    public JTextField getPuertoConnectar() {
+        return puertoConnectar;
+    }
+
+    public void setPuertoConnectar(JTextField puertoConnectar) {
+        this.puertoConnectar = puertoConnectar;
+    }
+
+    public JButton getBotonSetPuertos() {
+        return botonSetPuertos;
+    }
+
+    public void setBotonSetPuertos(JButton botonSetPuertos) {
+        this.botonSetPuertos = botonSetPuertos;
+    }
+
+    
 }

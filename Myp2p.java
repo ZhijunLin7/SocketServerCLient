@@ -1,4 +1,3 @@
-import java.util.Scanner;
 
 public class Myp2p {
 
@@ -6,19 +5,30 @@ public class Myp2p {
     private Serverconec serverconec;
     private Clientconec clientconec;
     private Conection conection;
+    private ChatApp chatApp;
 
     public Myp2p() {
-        Scanner s = new Scanner(System.in);
-        System.out.println("Establecer puerto de escucha");
-        int puertoescucha1 = s.nextInt();
-        System.out.println("Establecer puerto de coneccion");
-        int puertoabre1 = s.nextInt();
-        this.serverconec = new Serverconec(puertoescucha1);
-        this.clientconec = new Clientconec(puertoabre1);
+        this.chatApp = new ChatApp();
+        chatApp.getBotonSetPuertos().addActionListener(e -> {
+            this.setPuertos();
+        });
+    }
 
-        new Thread(serverconec).start();
-        new Thread(clientconec).start();
-
+    public void setPuertos() {
+        String puertoEscucha = this.chatApp.getPuertoEscucha().getText();
+        if (!puertoEscucha.equals("")) {
+            this.serverconec = new Serverconec(Integer.parseInt(puertoEscucha),this);
+            System.out.println("1");
+            Thread t = new Thread(this.serverconec);
+            t.start();
+        }
+        String puertoConectar = this.chatApp.getPuertoConnectar().getText();
+        if (!puertoConectar.equals("")) {
+            this.clientconec = new Clientconec(Integer.parseInt(puertoConectar),this);
+            System.out.println("2");
+            Thread t = new Thread(this.clientconec);
+            t.start();
+        }
     }
 
     public static void main(String[] args) {
@@ -47,6 +57,14 @@ public class Myp2p {
 
     public void setConection(Conection conection) {
         this.conection = conection;
+    }
+
+    public ChatApp getChatApp() {
+        return chatApp;
+    }
+
+    public void setChatApp(ChatApp chatApp) {
+        this.chatApp = chatApp;
     }
 
 }

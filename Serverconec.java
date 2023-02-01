@@ -6,10 +6,16 @@ public class Serverconec implements Runnable {
 
     // Atributos
     private Socket socket;
+    private Myp2p myp2p;
     private int puertoescucha;
 
-    public Serverconec(int puertoescucha) {
+    public Serverconec() {
+        
+    }
+
+    public Serverconec(int puertoescucha,Myp2p myp2p) {
         this.puertoescucha = puertoescucha;
+        this.myp2p= myp2p;
     }
 
     @Override
@@ -22,7 +28,7 @@ public class Serverconec implements Runnable {
             socket.getInetAddress();
             System.out.println("conectado");
 
-            Conection c = new Conection(socket);
+            Conection c = new Conection(socket,myp2p);
             Thread t = new Thread(c);
             t.start();
             ss.close();
@@ -30,6 +36,30 @@ public class Serverconec implements Runnable {
             System.out.println("Error: " + e);
         }
         
+    }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+
+    public int getPuertoescucha() {
+        return puertoescucha;
+    }
+
+    public synchronized void setPuertoescucha(int puertoescucha) {
+        this.puertoescucha = puertoescucha;
+    }
+
+    public Myp2p getMyp2p() {
+        return myp2p;
+    }
+
+    public void setMyp2p(Myp2p myp2p) {
+        this.myp2p = myp2p;
     }
 
 }
