@@ -89,10 +89,6 @@ public class ChatApp {
         frame.setVisible(true);
     }
 
-    public static void main(String[] args) {
-        new ChatApp();
-    }
-
     public JTextArea getAreaMsg() {
         return areaMsg;
     }

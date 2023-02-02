@@ -10,12 +10,12 @@ public class Serverconec implements Runnable {
     private int puertoescucha;
 
     public Serverconec() {
-        
+
     }
 
-    public Serverconec(int puertoescucha,Myp2p myp2p) {
+    public Serverconec(int puertoescucha, Myp2p myp2p) {
         this.puertoescucha = puertoescucha;
-        this.myp2p= myp2p;
+        this.myp2p = myp2p;
     }
 
     @Override
@@ -24,18 +24,23 @@ public class Serverconec implements Runnable {
         try {
             ServerSocket ss = new ServerSocket(puertoescucha);
             System.out.println("Abriendo servidor....");
-            socket = ss.accept();
-            socket.getInetAddress();
-            System.out.println("conectado");
 
-            Conection c = new Conection(socket,myp2p);
-            Thread t = new Thread(c);
-            t.start();
-            ss.close();
+            while (true) {
+                socket = ss.accept();
+                socket.getInetAddress();
+                System.out.println("conectado");
+
+                if (socket.isConnected()) {
+                    Conection c = myp2p.getConection();
+                    c.setS(socket);
+                    Thread t = new Thread(c);
+                    t.start();
+                }
+            }
         } catch (Exception e) {
             System.out.println("Error: " + e);
         }
-        
+
     }
 
     public Socket getSocket() {

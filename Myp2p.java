@@ -12,20 +12,19 @@ public class Myp2p {
         chatApp.getBotonSetPuertos().addActionListener(e -> {
             this.setPuertos();
         });
+        this.conection= new Conection(null, this);
     }
 
     public void setPuertos() {
         String puertoEscucha = this.chatApp.getPuertoEscucha().getText();
         if (!puertoEscucha.equals("")) {
             this.serverconec = new Serverconec(Integer.parseInt(puertoEscucha),this);
-            System.out.println("1");
             Thread t = new Thread(this.serverconec);
             t.start();
         }
         String puertoConectar = this.chatApp.getPuertoConnectar().getText();
         if (!puertoConectar.equals("")) {
             this.clientconec = new Clientconec(Integer.parseInt(puertoConectar),this);
-            System.out.println("2");
             Thread t = new Thread(this.clientconec);
             t.start();
         }

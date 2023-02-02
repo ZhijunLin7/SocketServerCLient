@@ -13,6 +13,9 @@ public class Conection implements Runnable {
     private BufferedWriter bw;
     private BufferedReader br;
 
+    public Conection() {
+        
+    }
     public Conection(Socket s,Myp2p myp2p) {
         this.s = s;
         this.myp2p=myp2p;
