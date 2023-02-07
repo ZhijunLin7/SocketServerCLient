@@ -6,43 +6,47 @@ public class Clientconec implements Runnable {
     // Atributos
     private Socket socket;
     private Myp2p myp2p;
-    private int puertoescucha;
+    private int puertoconectar;
 
-    public Clientconec() {
-
+    public Clientconec(Myp2p myp2p) {
+        this.myp2p = myp2p;
     }
 
-    public Clientconec(int puertoescucha, Myp2p myp2p) {
-        this.puertoescucha = puertoescucha;
+    public Clientconec(int puertoconectar, Myp2p myp2p) {
+        this.puertoconectar = puertoconectar;
         this.myp2p = myp2p;
     }
 
     @Override
     public void run() {
-        try {
-            socket = new Socket("127.0.0.1", puertoescucha);
-            while (true) {
-                Conection c = myp2p.getConection();
-                if (socket.isConnected() && c.getS() != socket) {
-                    c.setS(socket);
-                    Thread t = new Thread(c);
-                    t.start();
-                    System.out.println("Conectado al servidor");
-                }
-                Thread.sleep(2000);
+        while (true) {
+            try {
+                this.puertoconectar = 0;
+                socket = new Socket("127.0.0.1", this.getPuertoconectar());
+                myp2p.getConection().setS(socket);
+                
+            } catch (Exception e) {
+                System.out.println("Error: " + e);
             }
-
-        } catch (Exception e) {
-            System.out.println("Error: " + e);
         }
+
     }
 
-    public int getPuertoescucha() {
-        return puertoescucha;
+    public synchronized int getPuertoconectar() {
+        if (puertoconectar == 0) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        return puertoconectar;
     }
 
-    public synchronized void setPuertoescucha(int puertoescucha) {
-        this.puertoescucha = puertoescucha;
+    public synchronized void setPuertoconectar(int puertoconectar) {
+        this.puertoconectar = puertoconectar;
+        notifyAll();
     }
 
     public Myp2p getMyp2p() {

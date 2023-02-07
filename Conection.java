@@ -36,6 +36,7 @@ public class Conection implements Runnable {
                 // TODO: handle exception
             }
         }
+        
     }
 
     public void enviar() {

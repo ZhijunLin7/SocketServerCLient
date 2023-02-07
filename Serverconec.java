@@ -9,8 +9,8 @@ public class Serverconec implements Runnable {
     private Myp2p myp2p;
     private int puertoescucha;
 
-    public Serverconec() {
-
+    public Serverconec(Myp2p myp2p) {
+        this.myp2p = myp2p;
     }
 
     public Serverconec(int puertoescucha, Myp2p myp2p) {
@@ -22,7 +22,7 @@ public class Serverconec implements Runnable {
     public void run() {
 
         try {
-            ServerSocket ss = new ServerSocket(puertoescucha);
+            ServerSocket ss = new ServerSocket(this.getPuertoescucha());
             System.out.println("Abriendo servidor....");
 
             while (true) {
@@ -30,17 +30,31 @@ public class Serverconec implements Runnable {
                 socket.getInetAddress();
                 System.out.println("conectado");
 
-                if (socket.isConnected()) {
-                    Conection c = myp2p.getConection();
-                    c.setS(socket);
-                    Thread t = new Thread(c);
-                    t.start();
-                }
+                Conection c = myp2p.getConection();
+                c.setS(socket);
+
             }
         } catch (Exception e) {
             System.out.println("Error: " + e);
         }
 
+    }
+
+    public synchronized int getPuertoescucha() {
+        if (puertoescucha == 0) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        return puertoescucha;
+    }
+
+    public synchronized void setPuertoescucha(int puertoescucha) {
+        this.puertoescucha = puertoescucha;
+        notifyAll();
     }
 
     public Socket getSocket() {
@@ -49,14 +63,6 @@ public class Serverconec implements Runnable {
 
     public void setSocket(Socket socket) {
         this.socket = socket;
-    }
-
-    public int getPuertoescucha() {
-        return puertoescucha;
-    }
-
-    public synchronized void setPuertoescucha(int puertoescucha) {
-        this.puertoescucha = puertoescucha;
     }
 
     public Myp2p getMyp2p() {
