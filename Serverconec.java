@@ -29,7 +29,6 @@ public class Serverconec implements Runnable {
                 socket = ss.accept();
                 socket.getInetAddress();
                 System.out.println("conectado");
-
                 Conection c = myp2p.getConection();
                 c.setS(socket);
 
