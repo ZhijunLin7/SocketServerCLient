@@ -1,20 +1,18 @@
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-
-import java.io.OutputStreamWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class Conection implements Runnable {
 
     private Socket s;
     private Myp2p myp2p;
-    private BufferedWriter bw;
-    private BufferedReader br;
+    private ObjectOutputStream ow;
+    private ObjectInputStream or;
     private HCC hcc;
     private long lastTimeMessage;
+    private String autor;
 
     public Conection() {
 
@@ -37,18 +35,16 @@ public class Conection implements Runnable {
 
         while (true) {
             try {
-                br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-                String mess = br.readLine();
-                if (mess.equals("ping")) {
-                    lastTimeMessage = System.currentTimeMillis();
-                    bw.write("reping" + "\n");
-                    bw.flush();
-                    System.out.println(mess);
-                } else if (mess.equals("reping")) {
-                    lastTimeMessage = System.currentTimeMillis();
-                    System.out.println(mess);
-                }else {
-                    myp2p.getChatApp().getAreaMsg().append("Ell: " + mess + "\n");
+                or = new ObjectInputStream((s.getInputStream()));
+                Mensage mess = (Mensage) or.readObject();
+                lastTimeMessage = System.currentTimeMillis();
+                if (mess.getMsg().equals("ping")) {
+                    sendReping();
+                    System.out.println(mess.getMsg());
+                } else if (mess.getMsg().equals("reping")) {
+                    System.out.println(mess.getMsg());
+                } else {
+                    myp2p.getChatApp().getAreaMsg().append(mess.getAutor() + ": " + mess.getMsg() + "\n");
                 }
             } catch (Exception e) {
                 // TODO: handle exception
@@ -58,12 +54,13 @@ public class Conection implements Runnable {
 
     public void enviar() {
         try {
-            bw = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
+            ow = new ObjectOutputStream((s.getOutputStream()));
             String msg = myp2p.getChatApp().getEscribirMsg().getText();
-            myp2p.getChatApp().getAreaMsg().append("Yo: " + msg + "\n");
+            Mensage mensage = new Mensage(autor, msg);
+            myp2p.getChatApp().getAreaMsg().append(mensage.getAutor() + ": " + mensage.getMsg() + "\n");
             myp2p.getChatApp().getEscribirMsg().setText("");
-            bw.write(msg + "\n");
-            bw.flush();
+            ow.writeObject(mensage);
+            ow.flush();
         } catch (Exception e) {
             // TODO: handle exception
         }
@@ -89,14 +86,26 @@ public class Conection implements Runnable {
 
     public synchronized void sendPing() {
         try {
-            bw = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
-            bw.write("ping" + "\n");
-            bw.flush();
+            ow = new ObjectOutputStream((s.getOutputStream()));
+            Mensage mensage = new Mensage(autor, "ping");
+            ow.writeObject(mensage);
+            ow.flush();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
 
+    public synchronized void sendReping() {
+        try {
+            ow = new ObjectOutputStream((s.getOutputStream()));
+            Mensage mensage = new Mensage(autor, "reping");
+            ow.writeObject(mensage);
+            ow.flush();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public Socket getS() {
@@ -115,28 +124,44 @@ public class Conection implements Runnable {
         this.myp2p = myp2p;
     }
 
-    public BufferedWriter getBw() {
-        return bw;
-    }
-
-    public void setBw(BufferedWriter bw) {
-        this.bw = bw;
-    }
-
-    public BufferedReader getBr() {
-        return br;
-    }
-
-    public void setBr(BufferedReader br) {
-        this.br = br;
-    }
-
     public synchronized long getLastTimeMessage() {
         return lastTimeMessage;
     }
 
     public synchronized void setLastTimeMessage(long lastTimeMessage) {
         this.lastTimeMessage = lastTimeMessage;
+    }
+
+    public HCC getHcc() {
+        return hcc;
+    }
+
+    public void setHcc(HCC hcc) {
+        this.hcc = hcc;
+    }
+
+    public String getAutor() {
+        return autor;
+    }
+
+    public void setAutor(String autor) {
+        this.autor = autor;
+    }
+
+    public ObjectOutputStream getOw() {
+        return ow;
+    }
+
+    public void setOw(ObjectOutputStream ow) {
+        this.ow = ow;
+    }
+
+    public ObjectInputStream getOr() {
+        return or;
+    }
+
+    public void setOr(ObjectInputStream or) {
+        this.or = or;
     }
 
 }

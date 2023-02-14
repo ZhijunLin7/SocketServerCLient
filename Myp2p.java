@@ -1,4 +1,4 @@
-import java.util.Date;
+
 
 public class Myp2p {
 
@@ -17,7 +17,6 @@ public class Myp2p {
         this.serverconec = new Serverconec(this);
         this.clientconec = new Clientconec(this);
 
-
         Thread tConection = new Thread(this.conection);
         tConection.start();
         Thread tClient = new Thread(this.clientconec);
@@ -30,11 +29,14 @@ public class Myp2p {
         String puertoEscucha = this.chatApp.getPuertoEscucha().getText();
         if (!puertoEscucha.equals("")) {
             serverconec.setPuertoescucha(Integer.parseInt(puertoEscucha));
-            
         }
         String puertoConectar = this.chatApp.getPuertoConnectar().getText();
         if (!puertoConectar.equals("")) {
             clientconec.setPuertoconectar(Integer.parseInt(puertoConectar));
+        }
+        String autorMsg = this.chatApp.getAutormsg().getText();
+        if (!autorMsg.equals("")) {
+            conection.setAutor(autorMsg);
         }
     }
 
