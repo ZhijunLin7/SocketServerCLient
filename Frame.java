@@ -1,4 +1,6 @@
-public class Frame {
+import java.io.Serializable;
+
+public class Frame implements Serializable  {
     
     private Header header;
     private Payload payload;
@@ -6,6 +8,10 @@ public class Frame {
     public Frame(Header header, Payload payload) {
         this.header = header;
         this.payload = payload;
+    }
+    public Frame(String direccion, String nickname, TipoMensaje tipoMensaje,String msg) {
+        this.header = new Header(direccion, nickname, tipoMensaje);
+        this.payload = new Payload(msg);
     }
 
     public Header getHeader() {

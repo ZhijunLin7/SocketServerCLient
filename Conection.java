@@ -12,40 +12,28 @@ public class Conection implements Runnable {
     private ObjectInputStream or;
     private HCC hcc;
     private long lastTimeMessage;
-    private String autor;
+
 
     public Conection() {
 
     }
 
-    public Conection(Socket s, Myp2p myp2p) {
-        this.s = s;
+    public Conection( Myp2p myp2p) {
         this.myp2p = myp2p;
         this.hcc = new HCC(this);
-        Thread thcc = new Thread(hcc);
-        thcc.start();
+        
 
     }
 
     @Override
     public void run() {
-        myp2p.getChatApp().getBotonEnviar().addActionListener(e -> {
-            enviar();
-        });
 
         while (true) {
             try {
-                or = new ObjectInputStream((s.getInputStream()));
-                Mensage mess = (Mensage) or.readObject();
+                or = new ObjectInputStream(s.getInputStream());
+                Frame mess = (Frame) or.readObject();
                 lastTimeMessage = System.currentTimeMillis();
-                if (mess.getMsg().equals("ping")) {
-                    sendReping();
-                    System.out.println(mess.getMsg());
-                } else if (mess.getMsg().equals("reping")) {
-                    System.out.println(mess.getMsg());
-                } else {
-                    myp2p.getChatApp().getAreaMsg().append(mess.getAutor() + ": " + mess.getMsg() + "\n");
-                }
+                myp2p.procesarMsg(mess);
             } catch (Exception e) {
                 // TODO: handle exception
             }
@@ -54,11 +42,21 @@ public class Conection implements Runnable {
 
     public void enviar() {
         try {
-            ow = new ObjectOutputStream((s.getOutputStream()));
+            ow = new ObjectOutputStream(s.getOutputStream());
             String msg = myp2p.getChatApp().getEscribirMsg().getText();
-            Mensage mensage = new Mensage(autor, msg);
-            myp2p.getChatApp().getAreaMsg().append(mensage.getAutor() + ": " + mensage.getMsg() + "\n");
+            Frame mensage = new Frame(s.getLocalSocketAddress().toString(),myp2p.getAutor(),TipoMensaje.Mensage,msg);
+            myp2p.getChatApp().getAreaMsg().append(mensage.getHeader().getNickname() + ": " + mensage.getPyload().getMsg() + "\n");
             myp2p.getChatApp().getEscribirMsg().setText("");
+            ow.writeObject(mensage);
+            ow.flush();
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+    }
+
+    public void reEnviar(Frame mensage) {
+        try {
+            ow = new ObjectOutputStream(s.getOutputStream());
             ow.writeObject(mensage);
             ow.flush();
         } catch (Exception e) {
@@ -71,7 +69,6 @@ public class Conection implements Runnable {
             return false;
         }
         return true;
-
     }
 
     public synchronized void killSocket() {
@@ -86,8 +83,8 @@ public class Conection implements Runnable {
 
     public synchronized void sendPing() {
         try {
-            ow = new ObjectOutputStream((s.getOutputStream()));
-            Mensage mensage = new Mensage(autor, "ping");
+            ow = new ObjectOutputStream(s.getOutputStream());
+            Frame mensage = new Frame(s.getLocalSocketAddress().toString(),myp2p.getAutor(),TipoMensaje.Ping,null);
             ow.writeObject(mensage);
             ow.flush();
         } catch (IOException e) {
@@ -99,7 +96,7 @@ public class Conection implements Runnable {
     public synchronized void sendReping() {
         try {
             ow = new ObjectOutputStream((s.getOutputStream()));
-            Mensage mensage = new Mensage(autor, "reping");
+            Frame mensage = new Frame(s.getLocalSocketAddress().toString(),myp2p.getAutor(),TipoMensaje.Reping,null);
             ow.writeObject(mensage);
             ow.flush();
         } catch (IOException e) {
@@ -140,13 +137,6 @@ public class Conection implements Runnable {
         this.hcc = hcc;
     }
 
-    public String getAutor() {
-        return autor;
-    }
-
-    public void setAutor(String autor) {
-        this.autor = autor;
-    }
 
     public ObjectOutputStream getOw() {
         return ow;

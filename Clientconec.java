@@ -23,7 +23,12 @@ public class Clientconec implements Runnable {
             try {
                 this.puertoconectar = 0;
                 socket = new Socket("127.0.0.1", this.getPuertoconectar());
-                myp2p.getConection().setS(socket);
+                
+                if (!myp2p.getConection().isOk()) {
+                    myp2p.getConection().setS(socket);
+                }else{
+                    myp2p.getConection2().setS(socket);
+                }
                 
             } catch (Exception e) {
                 System.out.println("Error: " + e);
