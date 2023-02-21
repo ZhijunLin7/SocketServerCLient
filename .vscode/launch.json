@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch Myp2p",
+            "request": "launch",
+            "mainClass": "Myp2p",
+            "projectName": "ChatSocket_6d2adc95"
+        },
+        {
+            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}"

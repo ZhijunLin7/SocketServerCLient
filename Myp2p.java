@@ -61,14 +61,13 @@ public class Myp2p {
         if (mess.getHeader().getTipoMensaje().equals(TipoMensaje.Mensage) &&  !mess.getHeader().getNickname().equals(this.autor)) {
             if (conection.getS().getRemoteSocketAddress().toString().equals(mess.getHeader().getDireccion())) {
                 Frame ms=mess;
-                ms.getHeader().setDireccion(conection.getS().getLocalSocketAddress().toString());
+                ms.getHeader().setDireccion(conection2.getS().getLocalSocketAddress().toString());
                 conection2.reEnviar(ms);
             }else{
                 Frame ms=mess;
                 ms.getHeader().setDireccion(conection.getS().getLocalSocketAddress().toString());
                 conection.reEnviar(ms);
             }
-            System.out.println("pepe");
             chatApp.getAreaMsg().append(mess.getHeader().getNickname() + ": " + mess.getPyload().getMsg() + "\n");
         }
     }
