@@ -4,7 +4,7 @@
 public class HCC implements Runnable{
     
     private Conection c;
-    private int healthTimeOut=500;
+    private int healthTimeOut=1000;
     private String status; 
 
     public HCC(Conection c){

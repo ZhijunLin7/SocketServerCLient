@@ -21,8 +21,8 @@ public class Conection implements Runnable {
     public Conection( Myp2p myp2p) {
         this.myp2p = myp2p;
         this.hcc = new HCC(this);
-        
-
+        Thread hccThread = new Thread(hcc);
+        hccThread.start();
     }
 
     @Override
