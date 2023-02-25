@@ -1,11 +1,10 @@
-
+import java.util.ArrayList;
 public class Myp2p {
 
     // Atributos
     private Serverconec serverconec;
     private Clientconec clientconec;
-    private Conection conection;
-    private Conection conection2;
+    private ArrayList <Conection> conections;
     private ChatApp chatApp;
     private String autor;
 
@@ -14,19 +13,20 @@ public class Myp2p {
         chatApp.getBotonSetPuertos().addActionListener(e -> {
             this.setPuertos();
         });
-        this.conection= new Conection( this);
-        this.conection2= new Conection( this);
+        chatApp.getBotonEnviar().addActionListener(e -> {
+            conections.get(0).enviar();
+        });
+
+        this.conections = new ArrayList<>();
+        this.conections.add(new Conection( this));
+        this.conections.add(new Conection( this));
         this.serverconec = new Serverconec(this);
         this.clientconec = new Clientconec(this);
 
-        chatApp.getBotonEnviar().addActionListener(e -> {
-            conection.enviar();
-        });
-
-        Thread tConection = new Thread(this.conection);
-        tConection.start();
-        Thread tConection2 = new Thread(this.conection2);
-        tConection2.start();
+        for (Conection conection : conections) {
+            Thread tConection = new Thread(conection);
+            tConection.start();
+        }
         Thread tClient = new Thread(this.clientconec);
         tClient.start();
         Thread tServer = new Thread(this.serverconec);
@@ -40,7 +40,11 @@ public class Myp2p {
         }
         String puertoConectar = this.chatApp.getPuertoConnectar().getText();
         if (!puertoConectar.equals("")) {
-            clientconec.setPuertoconectar(Integer.parseInt(puertoConectar));
+            if (!conections.get(0).isOk()) {
+                conections.get(0).setPuerto(Integer.parseInt(puertoConectar));
+            }else{
+                conections.get(1).setPuerto(Integer.parseInt(puertoConectar));
+            }
         }
         String autorMsg = this.chatApp.getAutormsg().getText();
         if (!autorMsg.equals("")) {
@@ -50,26 +54,37 @@ public class Myp2p {
 
     public void procesarMsg(Frame mess) {
         if (mess.getHeader().getTipoMensaje().equals(TipoMensaje.Ping)) {
-            if (conection.getS().getRemoteSocketAddress().toString().equals(mess.getHeader().getDireccion())) {
-                conection.sendReping();
+            if (conections.get(0).getS().getRemoteSocketAddress().toString().equals(mess.getHeader().getDireccion())) {
+                conections.get(0).sendReping();
             }else{
-                conection2.sendReping();
+                conections.get(1).sendReping();
             }
         } else if (mess.getHeader().getTipoMensaje().equals(TipoMensaje.Reping))  {
         } 
         
         if (mess.getHeader().getTipoMensaje().equals(TipoMensaje.Mensage) &&  !mess.getHeader().getNickname().equals(this.autor)) {
-            if (conection.getS().getRemoteSocketAddress().toString().equals(mess.getHeader().getDireccion())) {
+            chatApp.getAreaMsg().append(mess.getHeader().getNickname() + ": " + mess.getPyload().getMsg() + "\n");
+
+            if (conections.get(0).getS().getRemoteSocketAddress().toString().equals(mess.getHeader().getDireccion())) {
                 Frame ms=mess;
-                ms.getHeader().setDireccion(conection2.getS().getLocalSocketAddress().toString());
-                conection2.reEnviar(ms);
+                ms.getHeader().setDireccion(conections.get(1).getS().getLocalSocketAddress().toString());
+                conections.get(1).reEnviar(ms);
             }else{
                 Frame ms=mess;
-                ms.getHeader().setDireccion(conection.getS().getLocalSocketAddress().toString());
-                conection.reEnviar(ms);
+                ms.getHeader().setDireccion(conections.get(0).getS().getLocalSocketAddress().toString());
+                conections.get(0).reEnviar(ms);
             }
-            chatApp.getAreaMsg().append(mess.getHeader().getNickname() + ": " + mess.getPyload().getMsg() + "\n");
         }
+    }
+
+    public ArrayList<Conection> autoConectar() {
+        ArrayList<Conection> rConections= new ArrayList<>();
+        for (Conection conection : conections) {
+            if (!conection.isOk() && conection.getPuerto()!=0) {
+                rConections.add(conection);
+            }
+        }
+        return rConections;
     }
     public static void main(String[] args) {
         Myp2p pMyp2p = new Myp2p();
@@ -92,14 +107,6 @@ public class Myp2p {
         this.clientconec = clientconec;
     }
 
-    public Conection getConection() {
-        return conection;
-    }
-
-    public void setConection(Conection conection) {
-        this.conection = conection;
-    }
-
     public ChatApp getChatApp() {
         return chatApp;
     }
@@ -108,20 +115,20 @@ public class Myp2p {
         this.chatApp = chatApp;
     }
 
-    public Conection getConection2() {
-        return conection2;
-    }
-
-    public void setConection2(Conection conection2) {
-        this.conection2 = conection2;
-    }
-
     public String getAutor() {
         return autor;
     }
 
     public void setAutor(String autor) {
         this.autor = autor;
+    }
+
+    public ArrayList<Conection> getConections() {
+        return conections;
+    }
+
+    public void setConections(ArrayList<Conection> conections) {
+        this.conections = conections;
     }
     
 

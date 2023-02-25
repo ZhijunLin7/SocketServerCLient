@@ -1,6 +1,4 @@
 
-
-
 public class HCC implements Runnable{
     
     private Conection c;
@@ -16,15 +14,11 @@ public class HCC implements Runnable{
     public void run() {
         while (true) {
             if (c.isOk()) {
-                System.out.println("pasado 2");
-                int elapsedTime=(int) (System.currentTimeMillis()-c.getLastTimeMessage());
-                System.out.println(elapsedTime);
+                long elapsedTime=(System.currentTimeMillis()-c.getLastTimeMessage());
                 if(elapsedTime>=healthTimeOut){
-                    System.out.println("pasado 3");
                     if (status=="ok") {
                         c.sendPing();
                         this.status="write";
-                        System.out.println("pasado 4");
                     }else{
                         System.out.println("pasado 4 close");
                         c.killSocket();

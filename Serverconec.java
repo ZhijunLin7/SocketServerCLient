@@ -20,22 +20,19 @@ public class Serverconec implements Runnable {
 
     @Override
     public void run() {
-
         try {
             ServerSocket ss = new ServerSocket(this.getPuertoescucha());
             System.out.println("Abriendo servidor....");
-
             while (true) {
                 socket = ss.accept();
-                socket.getInetAddress();
-                System.out.println("conectado");
-                
-                if (!myp2p.getConection().isOk()) {
-                    myp2p.getConection().setS(socket);
-                }else{
-                    myp2p.getConection2().setS(socket);
+                System.out.println("Aceptado");
+                if (!myp2p.getConections().get(0).isOk() && myp2p.getConections().get(0).getPuerto()==0) {
+                    Conection c1 =myp2p.getConections().get(0);
+                    c1.setS(socket);
+                }else if(!myp2p.getConections().get(1).isOk() && myp2p.getConections().get(1).getPuerto()==0){
+                    Conection c2 =myp2p.getConections().get(1);
+                    c2.setS(socket);
                 }
-
             }
         } catch (Exception e) {
             System.out.println("Error: " + e);

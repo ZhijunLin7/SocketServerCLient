@@ -1,57 +1,42 @@
 
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Clientconec implements Runnable {
 
     // Atributos
     private Socket socket;
     private Myp2p myp2p;
-    private int puertoconectar;
 
     public Clientconec(Myp2p myp2p) {
         this.myp2p = myp2p;
     }
 
-    public Clientconec(int puertoconectar, Myp2p myp2p) {
-        this.puertoconectar = puertoconectar;
-        this.myp2p = myp2p;
-    }
 
     @Override
     public void run() {
         while (true) {
             try {
-                this.puertoconectar = 0;
-                socket = new Socket("127.0.0.1", this.getPuertoconectar());
+                ArrayList<Conection> rConections= myp2p.autoConectar();
                 
-                if (!myp2p.getConection().isOk()) {
-                    myp2p.getConection().setS(socket);
-                }else{
-                    myp2p.getConection2().setS(socket);
+                for (Conection conection : rConections) {
+                    socket = new Socket("127.0.0.1", conection.getPuerto());
+                
+                    if (!myp2p.getConections().get(0).isOk()) {
+                        myp2p.getConections().get(0).setS(socket);
+                        myp2p.getConections().get(0).setInetAddress(socket.getInetAddress());
+                        myp2p.getConections().get(0).setPuerto(socket.getPort());
+                    }else{
+                        myp2p.getConections().get(1).setS(socket);
+                        myp2p.getConections().get(1).setInetAddress(socket.getInetAddress());
+                        myp2p.getConections().get(1).setPuerto(socket.getPort());
+                    }
                 }
-                
+                Thread.sleep(1000);
             } catch (Exception e) {
-                System.out.println("Error: " + e);
             }
         }
 
-    }
-
-    public synchronized int getPuertoconectar() {
-        if (puertoconectar == 0) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-        return puertoconectar;
-    }
-
-    public synchronized void setPuertoconectar(int puertoconectar) {
-        this.puertoconectar = puertoconectar;
-        notifyAll();
     }
 
     public Myp2p getMyp2p() {
